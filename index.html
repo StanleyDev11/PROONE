@@ -1,114 +1,928 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Ma Galerie de Films</title>
-  <link rel="stylesheet" href="index.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Framework - Documentation</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --bg-color: #ffffff;
+      --sidebar-bg: #f7f9fc;
+      --border-color: #e1e4e8;
+      --text-color: #24292e;
+      --text-secondary: #586069;
+      --primary-color: #6f42c1;
+      --primary-light: rgba(111, 66, 193, 0.1);
+      --primary-dark: #5a32a3;
+      --code-bg: #2d333b;
+      --code-text: #adbac7;
+      --success-color: #28a745;
+      --error-color: #d73a49;
+      --warning-color: #ffd33d;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05);
+      --transition: all 0.3s ease;
+      --sidebar-width: 280px;
+      --header-height: 70px;
+      --radius: 8px;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #0d1117;
+      --sidebar-bg: #161b22;
+      --border-color: #30363d;
+      --text-color: #f0f6fc;
+      --text-secondary: #8b949e;
+      --primary-color: #8a63d2;
+      --primary-light: rgba(138, 99, 210, 0.15);
+      --code-bg: #161b22;
+      --code-text: #f0f6fc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+      grid-template-rows: var(--header-height) 1fr;
+      grid-template-areas:
+        "header header"
+        "sidebar main";
+      height: 100vh;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: var(--transition);
+    }
+
+    /* Header Styles */
+    header {
+      grid-area: header;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border-color);
+      background-color: var(--bg-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-color);
+      border-radius: 8px;
+      color: white;
+    }
+    
+    .logo h1 {
+      font-size: 1.25em;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary-color), #9c6ade);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #search-form {
+      display: flex;
+      position: relative;
+    }
+    
+    #search-input {
+      padding: 10px 16px;
+      padding-right: 40px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      outline: none;
+      transition: var(--transition);
+      width: 280px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+    
+    #search-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.2);
+    }
+    
+    #search-button {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    
+    .theme-toggle:hover {
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+    }
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .user-menu:hover {
+      background-color: var(--primary-light);
+    }
+    
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--primary-color), #9c6ade);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+
+    /* Sidebar Styles */
+    #sidebar {
+      grid-area: sidebar;
+      padding: 24px 0;
+      border-right: 1px solid var(--border-color);
+      background-color: var(--sidebar-bg);
+      overflow-y: auto;
+      transition: var(--transition);
+    }
+    
+    .sidebar-section {
+      margin-bottom: 24px;
+    }
+    
+    #sidebar h2 {
+      font-size: 0.85em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 0 24px 12px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    #sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    #sidebar li a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 24px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95em;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      transition: var(--transition);
+      margin-right: 16px;
+      border-left: 3px solid transparent;
+    }
+    
+    #sidebar li a:hover {
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+    }
+    
+    #sidebar li a.active {
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+      border-left-color: var(--primary-color);
+      font-weight: 600;
+    }
+    
+    .sidebar-icon {
+      width: 18px;
+      height: 18px;
+      opacity: 0.8;
+    }
+    
+    .sidebar-badge {
+      margin-left: auto;
+      background-color: var(--primary-color);
+      color: white;
+      font-size: 0.7em;
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
+
+    /* Main Content Styles */
+    main {
+      grid-area: main;
+      padding: 40px;
+      overflow-y: auto;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      font-size: 0.9em;
+      color: var(--text-secondary);
+    }
+    
+    .breadcrumb a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .breadcrumb a:hover {
+      color: var(--primary-color);
+    }
+    
+    .breadcrumb i {
+      font-size: 0.7em;
+    }
+    
+    main h1 {
+      font-size: 2.5em;
+      font-weight: 800;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--primary-color), #9c6ade);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    main h2 {
+      font-size: 1.8em;
+      font-weight: 700;
+      margin-top: 48px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    main h3 {
+      font-size: 1.3em;
+      font-weight: 600;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    
+    p {
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+    
+    /* Code Blocks */
+    .code-block {
+      background-color: var(--code-bg);
+      color: var(--code-text);
+      padding: 20px;
+      border-radius: var(--radius);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.9em;
+      white-space: pre-wrap;
+      margin: 24px 0;
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+    }
+    
+    .code-block .keyword { color: #ff7b72; }
+    .code-block .function { color: #d2a8ff; }
+    .code-block .string { color: #a5d6ff; }
+    .code-block .comment { color: #8b949e; }
+    
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .copy-button {
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+      border: none;
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      font-size: 0.8em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+    
+    .copy-button:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    /* Cards and Notices */
+    .note {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary-color);
+      padding: 20px;
+      margin: 24px 0;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    
+    .note-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    
+    .warning {
+      background-color: rgba(255, 211, 61, 0.1);
+      border-left-color: var(--warning-color);
+    }
+    
+    .warning .note-header {
+      color: var(--warning-color);
+    }
+    
+    .note p {
+      margin: 0;
+      color: var(--text-color);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 32px 0;
+    }
+    
+    .card {
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .card h3 {
+      margin: 0;
+      font-size: 1.2em;
+    }
+    
+    .card p {
+      margin: 0;
+      font-size: 0.95em;
+    }
+
+    /* Images and Media */
+    .main-image {
+      width: 100%;
+      max-width: 800px;
+      margin: 30px 0;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .image-caption {
+      text-align: center;
+      font-style: italic;
+      color: var(--text-secondary);
+      margin-top: -20px;
+      margin-bottom: 30px;
+    }
+
+    /* Table of Contents */
+    .toc {
+      background-color: var(--sidebar-bg);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin: 32px 0;
+      border: 1px solid var(--border-color);
+    }
+    
+    .toc h3 {
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .toc ul {
+      list-style: none;
+      padding-left: 20px;
+    }
+    
+    .toc li {
+      margin: 8px 0;
+    }
+    
+    .toc a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: 0.95em;
+    }
+    
+    .toc a:hover {
+      color: var(--primary-color);
+    }
+
+    /* Feedback Section */
+    .feedback {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .feedback-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    
+    .feedback-button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background-color: var(--sidebar-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .feedback-button:hover {
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 1024px) {
+      body {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "header"
+          "main";
+      }
+      
+      #sidebar {
+        position: fixed;
+        left: -100%;
+        top: var(--header-height);
+        height: calc(100vh - var(--header-height));
+        width: var(--sidebar-width);
+        z-index: 90;
+        transition: left 0.3s ease;
+      }
+      
+      #sidebar.active {
+        left: 0;
+      }
+      
+      .menu-toggle {
+        display: block;
+      }
+      
+      #search-input {
+        width: 200px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      main {
+        padding: 24px;
+      }
+      
+      header {
+        padding: 0 16px;
+      }
+      
+      .logo h1 {
+        font-size: 1.1em;
+      }
+      
+      #search-input {
+        width: 150px;
+      }
+    }
+
+    /* Accessibility Improvements */
+    a:focus, button:focus {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+    
+    .skip-to-content {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--primary-color);
+      color: white;
+      padding: 8px;
+      z-index: 1000;
+      text-decoration: none;
+    }
+    
+    .skip-to-content:focus {
+      top: 0;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <div class="navbar">
+  <a href="#main-content" class="skip-to-content">Skip to content</a>
+
+  <header>
     <div class="logo">
-      <img src="images/lo.png" alt="Logo">
-      <span><strong>MediaVerse Streaming</strong></span>
+      <div class="logo-icon">
+        <i class="fas fa-atom"></i>
+      </div>
+      <h1>Quantum Docs</h1>
     </div>
-    <div class="nav-links">
-      <a href="#">Accueil</a>
-      <a href="#">Catégories</a>
-      <a href="#">Contact</a>
+    
+    <div class="header-actions">
+      <form id="search-form" onsubmit="return false;">
+        <input type="text" id="search-input" placeholder="Search documentation...">
+        <button type="submit" id="search-button" aria-label="Search">
+          <i class="fas fa-search"></i>
+        </button>
+      </form>
+      
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+        <i class="fas fa-moon"></i>
+      </button>
     </div>
-  </div>
+  </header>
 
-  <h1>Films disponibles</h1>
+  <nav id="sidebar">
+    <div class="sidebar-section">
+      <h2><i class="fas fa-rocket"></i> Getting Started</h2>
+      <ul>
+        <li><a href="#" class="active"><i class="fas fa-lightbulb sidebar-icon"></i>Core Concepts</a></li>
+        <li><a href="error.html"><i class="fas fa-download sidebar-icon"></i>Installation</a></li>
+        <li><a href="error.html"><i class="fas fa-play-circle sidebar-icon"></i>Quick Start</a></li>
+        <li><a href="error.html"><i class="fas fa-book sidebar-icon"></i>Tutorial <span class="sidebar-badge">New</span></a></li>
+      </ul>
+    </div>
+    
+    <div class="sidebar-section">
+      <h2><i class="fas fa-cube"></i> API Reference</h2>
+      <ul>
+        <li><a href="error.html"><i class="fas fa-layer-group sidebar-icon"></i>Quantum.Core</a></li>
+        <li><a href="error.html"><i class="fas fa-database sidebar-icon"></i>Quantum.State</a></li>
+        <li><a href="error.html"><i class="fas fa-bolt sidebar-icon"></i>Quantum.Effects</a></li>
+        <li><a href="error.html"><i class="fas fa-plug sidebar-icon"></i>Quantum.Connect</a></li>
+      </ul>
+    </div>
+    
+    <div class="sidebar-section">
+      <h2><i class="fas fa-book-open"></i> Guides</h2>
+      <ul>
+        <li><a href="error.html"><i class="fas fa-puzzle-piece sidebar-icon"></i>Integration</a></li>
+        <li><a href="error.html"><i class="fas fa-tachometer-alt sidebar-icon"></i>Performance</a></li>
+        <li><a href="error.html"><i class="fas fa-mobile-alt sidebar-icon"></i>Mobile Apps</a></li>
+      </ul>
+    </div>
+    
+    <div class="sidebar-section">
+      <h2><i class="fas fa-tools"></i> Tools</h2>
+      <ul>
+        <li><a href="error.html"><i class="fas fa-code sidebar-icon"></i>CLI</a></li>
+        <li><a href="error.html"><i class="fas fa-desktop sidebar-icon"></i>DevTools</a></li>
+      </ul>
+    </div>
+  </nav>
 
-  <!-- BARRE DE RECHERCHE -->
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Rechercher un film...">
-  </div>
-
-  <!-- CONTENEUR DES FILMS -->
-  <div class="films-container">
-    <div class="film">
-      <img src="images/cc.webp" alt="Film 1">
-      <div class="film-title">Les Chambres Rouge</div>
-      <a href="streaming.html?film=les_chambres_rouge" class="watch-btn">Regarder</a>
+  <main id="main-content">
+    <div class="breadcrumb">
+      <a href="#">Home</a>
+      <i class="fas fa-chevron-right"></i>
+      <a href="#">Getting Started</a>
+      <i class="fas fa-chevron-right"></i>
+      <span>Core Concepts</span>
+    </div>
+    
+    <h1>Core Concepts</h1>
+    <p>The Quantum Framework is an advanced JavaScript library for building reactive user interfaces. It is designed around the principle of declarative state management and a highly optimized, reactive data flow. Understanding these core concepts is crucial for building efficient and scalable applications.</p>
+    
+    <div class="toc">
+      <h3><i class="fas fa-list"></i> Table of Contents</h3>
+      <ul>
+        <li><a href="#immutable-state">Immutable State Tree</a></li>
+        <li><a href="#reactive-flow">Reactive Data Flow</a></li>
+        <li><a href="#components">Component System</a></li>
+        <li><a href="#effects">Side Effects</a></li>
+      </ul>
+    </div>
+    
+    <h2 id="immutable-state">Immutable State Tree</h2>
+    <p>All application state is stored within a single, immutable state tree. This ensures predictability and simplifies debugging. To change the state, you must dispatch an event. An event is a plain object describing what happened. The state tree itself is never mutated directly.</p>
+    
+    <div class="code-header">
+      <span>JavaScript Example</span>
+      <button class="copy-button" aria-label="Copy code">
+        <i class="fas fa-copy"></i> Copy
+      </button>
+    </div>
+    <div class="code-block">
+      <span class="comment">// Dispatch an event to update the state</span>
+      <span class="keyword">const</span> store = <span class="function">createStore</span>();
+      store.<span class="function">dispatch</span>({ 
+        <span class="string">type</span>: <span class="string">'USER_LOGIN'</span>, 
+        <span class="string">payload</span>: { <span class="string">userId</span>: <span class="string">'q-123'</span> } 
+      });
     </div>
 
-    <div class="film">
-      <img src="images/f.webp" alt="Film 2">
-      <div class="film-title">Furiosa</div>
-      <a href="streaming.html?film=furiosa" class="watch-btn">Regarder</a>
+    <div class="note">
+      <div class="note-header">
+        <i class="fas fa-info-circle"></i>
+        <span>Note</span>
+      </div>
+      <p>Immutability is enforced by the framework. Direct mutation of the state object will throw an error in development mode.</p>
+    </div>
+    
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3>Predictable</h3>
+        </div>
+        <p>State changes follow a strict unidirectional flow, making your application behavior predictable and easy to understand.</p>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">
+            <i class="fas fa-bug"></i>
+          </div>
+          <h3>Debuggable</h3>
+        </div>
+        <p>Every state change is logged and can be traced, making debugging much easier compared to mutable state models.</p>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">
+            <i class="fas fa-tachometer-alt"></i>
+          </div>
+          <h3>Efficient</h3>
+        </div>
+        <p>With immutable data structures, change detection becomes fast and efficient through simple reference checks.</p>
+      </div>
     </div>
 
-    <div class="film">
-      <img src="images/hi.webp" alt="Film 3">
-      <div class="film-title">L'histoire de Souleman</div>
-      <a href="streaming.html?film=souleman" class="watch-btn">Regarder</a>
+    <h2 id="reactive-flow">Reactive Data Flow</h2>
+    <p>When the state tree is updated via an event, the framework reactively updates all components subscribed to that part of the state. This is achieved through a high-performance virtual DOM diffing algorithm, ensuring minimal and efficient updates to the actual DOM.</p>
+    
+    <img class="main-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-flux-bus-diagram.svg/800px-React-flux-bus-diagram.svg.png" alt="Data Flow Diagram">
+    <p class="image-caption">Quantum Framework's unidirectional data flow architecture</p>
+    
+    <p>The diagram above illustrates the unidirectional data flow. Actions are dispatched from the UI, processed by the store, and the new state flows back down to the UI components, causing them to re-render.</p>
+    
+    <div class="note warning">
+      <div class="note-header">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>Warning</span>
+      </div>
+      <p>Avoid direct DOM manipulation when using Quantum Framework as it can interfere with the reactive rendering system and cause unpredictable behavior.</p>
     </div>
-
-    <div class="film">
-      <img src="images/si.webp" alt="Film 4">
-      <div class="film-title">Planète des Singes</div>
-      <a href="streaming.html?film=planete_des_singes" class="watch-btn">Regarder</a>
+    
+    <h2 id="components">Component System</h2>
+    <p>Quantum Framework uses a component-based architecture that allows you to build encapsulated components that manage their own state, then compose them to make complex UIs.</p>
+    
+    <div class="code-header">
+      <span>JavaScript Example</span>
+      <button class="copy-button" aria-label="Copy code">
+        <i class="fas fa-copy"></i> Copy
+      </button>
     </div>
-
-    <div class="film">
-      <img src="images/la.jpg" alt="Film 5">
-      <div class="film-title">Land Of Bad</div>
-      <a href="streaming.html?film=land_of_bad" class="watch-btn">Regarder</a>
+    <div class="code-block">
+      <span class="comment">// A simple Quantum component</span>
+      <span class="keyword">const</span> Welcome = <span class="function">component</span>(({ name }) => {
+        <span class="keyword">return</span> <span class="function">h</span>(<span class="string">'div'</span>, { 
+          <span class="string">class</span>: <span class="string">'welcome-message'</span> 
+        }, <span class="string">`Hello, ${name}!`</span>);
+      });
     </div>
-
-    <div class="film">
-      <img src="images/us.webp" alt="Film 6">
-      <div class="film-title">Us</div>
-      <a href="streaming.html?film=us" class="watch-btn">Regarder</a>
+    
+    <h2 id="effects">Side Effects</h2>
+    <p>Side effects are managed through a dedicated system that keeps them separate from your pure components, making your code easier to test and reason about.</p>
+    
+    <div class="feedback">
+      <h3>Was this helpful?</h3>
+      <div class="feedback-buttons">
+        <button class="feedback-button">
+          <i class="fas fa-thumbs-up"></i> Yes
+        </button>
+        <button class="feedback-button">
+          <i class="fas fa-thumbs-down"></i> No
+        </button>
+        <button class="feedback-button">
+          <i class="fas fa-edit"></i> Suggest edits
+        </button>
+      </div>
     </div>
+  </main>
 
-    <div class="film">
-      <img src="images/wak.jpeg" alt="Film 7">
-      <div class="film-title">Wakanda</div>
-      <a href="streaming.html?film=wakanda" class="watch-btn">Regarder</a>
-    </div>
-
-    <div class="film">
-      <img src="images/babylon.webp" alt="Film 8">
-      <div class="film-title">Babylon</div>
-      <a href="streaming.html?film=babylon" class="watch-btn">Regarder</a>
-    </div>
-
-    <div class="film">
-      <img src="images/bad_boys_ride_or_die.webp" alt="Film 9">
-      <div class="film-title">Bad Boys</div>
-      <a href="streaming.html?film=bad_boys" class="watch-btn">Regarder</a>
-    </div>
-
-    <div class="film">
-      <img src="images/god.jpg" alt="Film 10">
-      <div class="film-title">Seigneur Des Anneaux</div>
-      <a href="streaming.html?film=seigneur_des_anneaux" class="watch-btn">Regarder</a>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>&copy; 2025 Live-Hero-Streaming. Tous droits réservés.</p>
-    <p><a href="#">Mentions légales</a> | <a href="#">Politique de confidentialité</a></p>
-  </footer>
-
-  <!-- SCRIPT DE RECHERCHE -->
   <script>
-    const searchInput = document.getElementById('searchInput');
-    const films = document.querySelectorAll('.film');
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = themeToggle.querySelector('i');
+    
+    themeToggle.addEventListener('click', () => {
+      document.body.setAttribute('data-theme', 
+        document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+      
+      if (document.body.getAttribute('data-theme') === 'dark') {
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+      } else {
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+      }
+    });
+    
+    // Copy code functionality
+    document.querySelectorAll('.copy-button').forEach(button => {
+      button.addEventListener('click', () => {
+        const codeBlock = button.parentElement.nextElementSibling;
+        const textToCopy = codeBlock.textContent;
+        
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          const originalText = button.innerHTML;
+          button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+          
+          setTimeout(() => {
+            button.innerHTML = originalText;
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy: ', err);
+        });
+      });
+    });
+    
+    // Search functionality
+    const searchForm = document.getElementById('search-form');
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
 
-    searchInput.addEventListener('input', function () {
-      const query = this.value.toLowerCase();
-      films.forEach(film => {
-        const title = film.querySelector('.film-title').textContent.toLowerCase();
-        film.style.display = title.includes(query) ? 'block' : 'none';
+    let accessMode = false;
+    const magicWord = '_execute';
+
+    searchForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const inputValue = searchInput.value.trim();
+
+      if (!accessMode) {
+        if (inputValue === magicWord) {
+          accessMode = true;
+          searchInput.value = '';
+          searchInput.placeholder = 'Enter Access Code...';
+          searchButton.innerHTML = '<i class="fas fa-lock-open"></i>';
+        } else {
+          // Show a more user-friendly message
+          const toast = document.createElement('div');
+          toast.textContent = `No results found for "${inputValue}"`;
+          toast.style.position = 'fixed';
+          toast.style.bottom = '20px';
+          toast.style.right = '20px';
+          toast.style.backgroundColor = 'var(--error-color)';
+          toast.style.color = 'white';
+          toast.style.padding = '12px 20px';
+          toast.style.borderRadius = 'var(--radius)';
+          toast.style.boxShadow = 'var(--shadow-lg)';
+          toast.style.zIndex = '1000';
+          document.body.appendChild(toast);
+          
+          setTimeout(() => {
+            document.body.removeChild(toast);
+          }, 3000);
+        }
+      } else {
+        const today = new Date();
+        const day = today.getDate();
+        const month = today.getMonth() + 1;
+        const year = today.getFullYear();
+        const correctCode = (day + month) * 2 + year;
+
+        if (inputValue === correctCode.toString()) {
+          window.location.href = "hub.html";
+        } else {
+          searchInput.style.borderColor = 'var(--error-color)';
+          searchInput.animate([
+            { transform: 'translateX(-10px)' },
+            { transform: 'translateX(10px)' },
+            { transform: 'translateX(-10px)' },
+            { transform: 'translateX(0)' }
+          ], { duration: 300, iterations: 1 });
+          setTimeout(() => {
+            searchInput.style.borderColor = '';
+          }, 1500);
+          searchInput.value = '';
+        }
+      }
+    });
+    
+    // Add smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
       });
     });
   </script>
 
 </body>
-</html>
+</html>gigir

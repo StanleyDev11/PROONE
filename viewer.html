@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Visionneuse</title>
+  <link rel="stylesheet" href="hub.css">
+</head>
+<body>
+
+  <div class="viewer-container">
+    <header class="viewer-header">
+      <h1 class="viewer-title" id="content-title">Chargement...</h1>
+    </header>
+
+    <main id="content-area">
+      <!-- Le contenu sera injecté ici par le script -->
+    </main>
+
+    <a href="hub.html" class="back-link">&#x2190; Retour au Hub</a>
+  </div>
+
+  <script>
+    // Base de données de contenu de remplacement
+    const contentDatabase = {
+      videos: {
+        v1: {
+          title: "Vidéo #001",
+          type: "video",
+          source: "videos/SMARTY.mp4"
+        }
+      },
+      docs: {
+        d1: {
+          title: "Dossier #A1",
+          type: "text",
+          content: `Ceci est un rapport confidentiel.\n\nLes informations contenues dans ce document sont classifiées.\n\n- Sujet : Opération Aube\n- Date : 31.08.2025\n\nL'opération a atteint ses objectifs principaux. Les détails suivront dans les canaux sécurisés. Toute dissémination non autorisée de ce document est strictement interdite.`
+        }
+      }
+    };
+
+    // Logique d'affichage
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const type = urlParams.get('type');
+      const id = urlParams.get('id');
+
+      const titleElement = document.getElementById('content-title');
+      const contentArea = document.getElementById('content-area');
+
+      let data = null;
+      if (type === 'video' && contentDatabase.videos[id]) {
+        data = contentDatabase.videos[id];
+      } else if (type === 'doc' && contentDatabase.docs[id]) {
+        data = contentDatabase.docs[id];
+      }
+
+      if (data) {
+        titleElement.textContent = data.title;
+
+        if (data.type === 'video') {
+          const videoPlayer = document.createElement('video');
+          videoPlayer.setAttribute('controls', true);
+          const source = document.createElement('source');
+          source.setAttribute('src', data.source);
+          source.setAttribute('type', 'video/mp4');
+          videoPlayer.appendChild(source);
+          videoPlayer.innerHTML += 'Votre navigateur ne prend pas en charge la lecture vidéo.';
+          contentArea.appendChild(videoPlayer);
+        } else if (data.type === 'text') {
+          const textContent = document.createElement('div');
+          textContent.className = 'text-content';
+          textContent.textContent = data.content;
+          contentArea.appendChild(textContent);
+        }
+
+      } else {
+        titleElement.textContent = "Contenu Introuvable";
+        contentArea.innerHTML = "<p>Le contenu demandé n'existe pas ou l'accès est refusé.</p>";
+      }
+    });
+  </script>
+
+</body>
+</html>
