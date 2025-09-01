@@ -1,928 +1,941 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quantum Framework - Documentation</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-    :root {
-      --bg-color: #ffffff;
-      --sidebar-bg: #f7f9fc;
-      --border-color: #e1e4e8;
-      --text-color: #24292e;
-      --text-secondary: #586069;
-      --primary-color: #6f42c1;
-      --primary-light: rgba(111, 66, 193, 0.1);
-      --primary-dark: #5a32a3;
-      --code-bg: #2d333b;
-      --code-text: #adbac7;
-      --success-color: #28a745;
-      --error-color: #d73a49;
-      --warning-color: #ffd33d;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
-      --shadow-md: 0 4px 6px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
-      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05);
-      --transition: all 0.3s ease;
-      --sidebar-width: 280px;
-      --header-height: 70px;
-      --radius: 8px;
-    }
-
-    [data-theme="dark"] {
-      --bg-color: #0d1117;
-      --sidebar-bg: #161b22;
-      --border-color: #30363d;
-      --text-color: #f0f6fc;
-      --text-secondary: #8b949e;
-      --primary-color: #8a63d2;
-      --primary-light: rgba(138, 99, 210, 0.15);
-      --code-bg: #161b22;
-      --code-text: #f0f6fc;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      margin: 0;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: grid;
-      grid-template-columns: var(--sidebar-width) 1fr;
-      grid-template-rows: var(--header-height) 1fr;
-      grid-template-areas:
-        "header header"
-        "sidebar main";
-      height: 100vh;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      transition: var(--transition);
-    }
-
-    /* Header Styles */
-    header {
-      grid-area: header;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 24px;
-      border-bottom: 1px solid var(--border-color);
-      background-color: var(--bg-color);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: var(--shadow-sm);
-    }
-    
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    
-    .logo-icon {
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--primary-color);
-      border-radius: 8px;
-      color: white;
-    }
-    
-    .logo h1 {
-      font-size: 1.25em;
-      font-weight: 700;
-      background: linear-gradient(90deg, var(--primary-color), #9c6ade);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    #search-form {
-      display: flex;
-      position: relative;
-    }
-    
-    #search-input {
-      padding: 10px 16px;
-      padding-right: 40px;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      outline: none;
-      transition: var(--transition);
-      width: 280px;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-    }
-    
-    #search-input:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.2);
-    }
-    
-    #search-button {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      cursor: pointer;
-      padding: 4px;
-    }
-
-    .theme-toggle {
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-    }
-    
-    .theme-toggle:hover {
-      background-color: var(--primary-light);
-      color: var(--primary-color);
-    }
-
-    .user-menu {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    
-    .user-menu:hover {
-      background-color: var(--primary-light);
-    }
-    
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(45deg, var(--primary-color), #9c6ade);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-    }
-
-    /* Sidebar Styles */
-    #sidebar {
-      grid-area: sidebar;
-      padding: 24px 0;
-      border-right: 1px solid var(--border-color);
-      background-color: var(--sidebar-bg);
-      overflow-y: auto;
-      transition: var(--transition);
-    }
-    
-    .sidebar-section {
-      margin-bottom: 24px;
-    }
-    
-    #sidebar h2 {
-      font-size: 0.85em;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin: 0 24px 12px;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    #sidebar ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    
-    #sidebar li a {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 24px;
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 0.95em;
-      border-radius: 0 var(--radius) var(--radius) 0;
-      transition: var(--transition);
-      margin-right: 16px;
-      border-left: 3px solid transparent;
-    }
-    
-    #sidebar li a:hover {
-      background-color: var(--primary-light);
-      color: var(--primary-color);
-    }
-    
-    #sidebar li a.active {
-      background-color: var(--primary-light);
-      color: var(--primary-color);
-      border-left-color: var(--primary-color);
-      font-weight: 600;
-    }
-    
-    .sidebar-icon {
-      width: 18px;
-      height: 18px;
-      opacity: 0.8;
-    }
-    
-    .sidebar-badge {
-      margin-left: auto;
-      background-color: var(--primary-color);
-      color: white;
-      font-size: 0.7em;
-      padding: 2px 6px;
-      border-radius: 10px;
-    }
-
-    /* Main Content Styles */
-    main {
-      grid-area: main;
-      padding: 40px;
-      overflow-y: auto;
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-    }
-    
-    .breadcrumb {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 24px;
-      font-size: 0.9em;
-      color: var(--text-secondary);
-    }
-    
-    .breadcrumb a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      transition: var(--transition);
-    }
-    
-    .breadcrumb a:hover {
-      color: var(--primary-color);
-    }
-    
-    .breadcrumb i {
-      font-size: 0.7em;
-    }
-    
-    main h1 {
-      font-size: 2.5em;
-      font-weight: 800;
-      margin-bottom: 24px;
-      background: linear-gradient(135deg, var(--primary-color), #9c6ade);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    main h2 {
-      font-size: 1.8em;
-      font-weight: 700;
-      margin-top: 48px;
-      margin-bottom: 16px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border-color);
-    }
-    
-    main h3 {
-      font-size: 1.3em;
-      font-weight: 600;
-      margin-top: 32px;
-      margin-bottom: 12px;
-    }
-    
-    p {
-      line-height: 1.8;
-      color: var(--text-secondary);
-      margin-bottom: 24px;
-    }
-    
-    /* Code Blocks */
-    .code-block {
-      background-color: var(--code-bg);
-      color: var(--code-text);
-      padding: 20px;
-      border-radius: var(--radius);
-      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-      font-size: 0.9em;
-      white-space: pre-wrap;
-      margin: 24px 0;
-      overflow-x: auto;
-      box-shadow: var(--shadow-sm);
-      border: 1px solid var(--border-color);
-    }
-    
-    .code-block .keyword { color: #ff7b72; }
-    .code-block .function { color: #d2a8ff; }
-    .code-block .string { color: #a5d6ff; }
-    .code-block .comment { color: #8b949e; }
-    
-    .code-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    
-    .copy-button {
-      background-color: var(--primary-light);
-      color: var(--primary-color);
-      border: none;
-      padding: 6px 12px;
-      border-radius: var(--radius);
-      font-size: 0.8em;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: var(--transition);
-    }
-    
-    .copy-button:hover {
-      background-color: var(--primary-color);
-      color: white;
-    }
-
-    /* Cards and Notices */
-    .note {
-      background-color: var(--primary-light);
-      border-left: 4px solid var(--primary-color);
-      padding: 20px;
-      margin: 24px 0;
-      border-radius: 0 var(--radius) var(--radius) 0;
-    }
-    
-    .note-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: var(--primary-color);
-    }
-    
-    .warning {
-      background-color: rgba(255, 211, 61, 0.1);
-      border-left-color: var(--warning-color);
-    }
-    
-    .warning .note-header {
-      color: var(--warning-color);
-    }
-    
-    .note p {
-      margin: 0;
-      color: var(--text-color);
-    }
-
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 24px;
-      margin: 32px 0;
-    }
-    
-    .card {
-      background-color: var(--bg-color);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 24px;
-      transition: var(--transition);
-      box-shadow: var(--shadow-sm);
-    }
-    
-    .card:hover {
-      box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
-    }
-    
-    .card-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-    
-    .card-icon {
-      width: 40px;
-      height: 40px;
-      background-color: var(--primary-light);
-      color: var(--primary-color);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .card h3 {
-      margin: 0;
-      font-size: 1.2em;
-    }
-    
-    .card p {
-      margin: 0;
-      font-size: 0.95em;
-    }
-
-    /* Images and Media */
-    .main-image {
-      width: 100%;
-      max-width: 800px;
-      margin: 30px 0;
-      border-radius: var(--radius);
-      border: 1px solid var(--border-color);
-      box-shadow: var(--shadow-md);
-    }
-    
-    .image-caption {
-      text-align: center;
-      font-style: italic;
-      color: var(--text-secondary);
-      margin-top: -20px;
-      margin-bottom: 30px;
-    }
-
-    /* Table of Contents */
-    .toc {
-      background-color: var(--sidebar-bg);
-      border-radius: var(--radius);
-      padding: 24px;
-      margin: 32px 0;
-      border: 1px solid var(--border-color);
-    }
-    
-    .toc h3 {
-      margin-top: 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .toc ul {
-      list-style: none;
-      padding-left: 20px;
-    }
-    
-    .toc li {
-      margin: 8px 0;
-    }
-    
-    .toc a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      transition: var(--transition);
-      font-size: 0.95em;
-    }
-    
-    .toc a:hover {
-      color: var(--primary-color);
-    }
-
-    /* Feedback Section */
-    .feedback {
-      margin-top: 48px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border-color);
-    }
-    
-    .feedback-buttons {
-      display: flex;
-      gap: 12px;
-      margin-top: 16px;
-    }
-    
-    .feedback-button {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      background-color: var(--sidebar-bg);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    
-    .feedback-button:hover {
-      background-color: var(--primary-light);
-      color: var(--primary-color);
-    }
-
-    /* Mobile Responsiveness */
-    @media (max-width: 1024px) {
-      body {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-          "header"
-          "main";
-      }
-      
-      #sidebar {
-        position: fixed;
-        left: -100%;
-        top: var(--header-height);
-        height: calc(100vh - var(--header-height));
-        width: var(--sidebar-width);
-        z-index: 90;
-        transition: left 0.3s ease;
-      }
-      
-      #sidebar.active {
-        left: 0;
-      }
-      
-      .menu-toggle {
-        display: block;
-      }
-      
-      #search-input {
-        width: 200px;
-      }
-    }
-    
-    @media (max-width: 768px) {
-      main {
-        padding: 24px;
-      }
-      
-      header {
-        padding: 0 16px;
-      }
-      
-      .logo h1 {
-        font-size: 1.1em;
-      }
-      
-      #search-input {
-        width: 150px;
-      }
-    }
-
-    /* Accessibility Improvements */
-    a:focus, button:focus {
-      outline: 2px solid var(--primary-color);
-      outline-offset: 2px;
-    }
-    
-    .skip-to-content {
-      position: absolute;
-      top: -40px;
-      left: 0;
-      background: var(--primary-color);
-      color: white;
-      padding: 8px;
-      z-index: 1000;
-      text-decoration: none;
-    }
-    
-    .skip-to-content:focus {
-      top: 0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamHub - Votre plateforme de streaming premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FFD700;
+            --primary-dark: #FFA500;
+            --dark: #000000;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #000;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .bg-primary {
+            background-color: var(--primary);
+        }
+        
+        .text-primary {
+            color: var(--primary);
+        }
+        
+        .border-primary {
+            border-color: var(--primary);
+        }
+        
+        .hover\:bg-primary-dark:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .section {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease-out;
+        }
+        
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .card-animation {
+            transition: transform 0.3s ease;
+        }
+        
+        .card-animation:hover {
+            transform: translateY(-10px);
+        }
+        
+        .video-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
+        
+        /* Animation pour la navbar */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+        
+        .navbar-animate {
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        /* Animation pour le bouton */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .btn-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .age-verification {
+            background: rgba(0, 0, 0, 0.9);
+        }
+        
+        .popup {
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--primary);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
-<body>
-
-  <a href="#main-content" class="skip-to-content">Skip to content</a>
-
-  <header>
-    <div class="logo">
-      <div class="logo-icon">
-        <i class="fas fa-atom"></i>
-      </div>
-      <h1>Quantum Docs</h1>
-    </div>
-    
-    <div class="header-actions">
-      <form id="search-form" onsubmit="return false;">
-        <input type="text" id="search-input" placeholder="Search documentation...">
-        <button type="submit" id="search-button" aria-label="Search">
-          <i class="fas fa-search"></i>
-        </button>
-      </form>
-      
-      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
-        <i class="fas fa-moon"></i>
-      </button>
-    </div>
-  </header>
-
-  <nav id="sidebar">
-    <div class="sidebar-section">
-      <h2><i class="fas fa-rocket"></i> Getting Started</h2>
-      <ul>
-        <li><a href="#" class="active"><i class="fas fa-lightbulb sidebar-icon"></i>Core Concepts</a></li>
-        <li><a href="error.html"><i class="fas fa-download sidebar-icon"></i>Installation</a></li>
-        <li><a href="error.html"><i class="fas fa-play-circle sidebar-icon"></i>Quick Start</a></li>
-        <li><a href="error.html"><i class="fas fa-book sidebar-icon"></i>Tutorial <span class="sidebar-badge">New</span></a></li>
-      </ul>
-    </div>
-    
-    <div class="sidebar-section">
-      <h2><i class="fas fa-cube"></i> API Reference</h2>
-      <ul>
-        <li><a href="error.html"><i class="fas fa-layer-group sidebar-icon"></i>Quantum.Core</a></li>
-        <li><a href="error.html"><i class="fas fa-database sidebar-icon"></i>Quantum.State</a></li>
-        <li><a href="error.html"><i class="fas fa-bolt sidebar-icon"></i>Quantum.Effects</a></li>
-        <li><a href="error.html"><i class="fas fa-plug sidebar-icon"></i>Quantum.Connect</a></li>
-      </ul>
-    </div>
-    
-    <div class="sidebar-section">
-      <h2><i class="fas fa-book-open"></i> Guides</h2>
-      <ul>
-        <li><a href="error.html"><i class="fas fa-puzzle-piece sidebar-icon"></i>Integration</a></li>
-        <li><a href="error.html"><i class="fas fa-tachometer-alt sidebar-icon"></i>Performance</a></li>
-        <li><a href="error.html"><i class="fas fa-mobile-alt sidebar-icon"></i>Mobile Apps</a></li>
-      </ul>
-    </div>
-    
-    <div class="sidebar-section">
-      <h2><i class="fas fa-tools"></i> Tools</h2>
-      <ul>
-        <li><a href="error.html"><i class="fas fa-code sidebar-icon"></i>CLI</a></li>
-        <li><a href="error.html"><i class="fas fa-desktop sidebar-icon"></i>DevTools</a></li>
-      </ul>
-    </div>
-  </nav>
-
-  <main id="main-content">
-    <div class="breadcrumb">
-      <a href="#">Home</a>
-      <i class="fas fa-chevron-right"></i>
-      <a href="#">Getting Started</a>
-      <i class="fas fa-chevron-right"></i>
-      <span>Core Concepts</span>
-    </div>
-    
-    <h1>Core Concepts</h1>
-    <p>The Quantum Framework is an advanced JavaScript library for building reactive user interfaces. It is designed around the principle of declarative state management and a highly optimized, reactive data flow. Understanding these core concepts is crucial for building efficient and scalable applications.</p>
-    
-    <div class="toc">
-      <h3><i class="fas fa-list"></i> Table of Contents</h3>
-      <ul>
-        <li><a href="#immutable-state">Immutable State Tree</a></li>
-        <li><a href="#reactive-flow">Reactive Data Flow</a></li>
-        <li><a href="#components">Component System</a></li>
-        <li><a href="#effects">Side Effects</a></li>
-      </ul>
-    </div>
-    
-    <h2 id="immutable-state">Immutable State Tree</h2>
-    <p>All application state is stored within a single, immutable state tree. This ensures predictability and simplifies debugging. To change the state, you must dispatch an event. An event is a plain object describing what happened. The state tree itself is never mutated directly.</p>
-    
-    <div class="code-header">
-      <span>JavaScript Example</span>
-      <button class="copy-button" aria-label="Copy code">
-        <i class="fas fa-copy"></i> Copy
-      </button>
-    </div>
-    <div class="code-block">
-      <span class="comment">// Dispatch an event to update the state</span>
-      <span class="keyword">const</span> store = <span class="function">createStore</span>();
-      store.<span class="function">dispatch</span>({ 
-        <span class="string">type</span>: <span class="string">'USER_LOGIN'</span>, 
-        <span class="string">payload</span>: { <span class="string">userId</span>: <span class="string">'q-123'</span> } 
-      });
-    </div>
-
-    <div class="note">
-      <div class="note-header">
-        <i class="fas fa-info-circle"></i>
-        <span>Note</span>
-      </div>
-      <p>Immutability is enforced by the framework. Direct mutation of the state object will throw an error in development mode.</p>
-    </div>
-    
-    <div class="card-grid">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">
-            <i class="fas fa-shield-alt"></i>
-          </div>
-          <h3>Predictable</h3>
+<body class="bg-black text-white">
+    <!-- Age Verification Modal -->
+    <div id="ageVerification" class="fixed inset-0 flex items-center justify-center z-50 age-verification">
+        <div class="popup p-8 rounded-lg w-full max-w-md mx-4 text-center">
+            <h2 class="text-2xl font-bold mb-4 text-primary">VÉRIFICATION D'ÂGE</h2>
+            <p class="mb-6">Ce site contient du matériel réservé aux adultes. Vous devez avoir au moins 18 ans pour accéder à ce contenu.</p>
+            <div class="flex justify-center gap-4">
+                <button id="ageConfirm" class="bg-primary text-black px-6 py-2 rounded font-bold hover:bg-yellow-300 transition">J'ai plus de 18 ans</button>
+                <button id="ageDeny" class="border border-primary text-primary px-6 py-2 rounded font-bold hover:bg-gray-800 transition">Quitter</button>
+            </div>
         </div>
-        <p>State changes follow a strict unidirectional flow, making your application behavior predictable and easy to understand.</p>
-      </div>
-      
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">
-            <i class="fas fa-bug"></i>
-          </div>
-          <h3>Debuggable</h3>
-        </div>
-        <p>Every state change is logged and can be traced, making debugging much easier compared to mutable state models.</p>
-      </div>
-      
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">
-            <i class="fas fa-tachometer-alt"></i>
-          </div>
-          <h3>Efficient</h3>
-        </div>
-        <p>With immutable data structures, change detection becomes fast and efficient through simple reference checks.</p>
-      </div>
     </div>
 
-    <h2 id="reactive-flow">Reactive Data Flow</h2>
-    <p>When the state tree is updated via an event, the framework reactively updates all components subscribed to that part of the state. This is achieved through a high-performance virtual DOM diffing algorithm, ensuring minimal and efficient updates to the actual DOM.</p>
-    
-    <img class="main-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-flux-bus-diagram.svg/800px-React-flux-bus-diagram.svg.png" alt="Data Flow Diagram">
-    <p class="image-caption">Quantum Framework's unidirectional data flow architecture</p>
-    
-    <p>The diagram above illustrates the unidirectional data flow. Actions are dispatched from the UI, processed by the store, and the new state flows back down to the UI components, causing them to re-render.</p>
-    
-    <div class="note warning">
-      <div class="note-header">
-        <i class="fas fa-exclamation-triangle"></i>
-        <span>Warning</span>
-      </div>
-      <p>Avoid direct DOM manipulation when using Quantum Framework as it can interfere with the reactive rendering system and cause unpredictable behavior.</p>
+    <!-- Popup -->
+    <div id="promoPopup" class="hidden fixed inset-0 flex items-center justify-center z-40 bg-black bg-opacity-80">
+        <div class="popup p-8 rounded-lg w-full max-w-md mx-4 relative">
+            <button id="closePopup" class="absolute top-4 right-4 text-white hover:text-primary text-xl">&times;</button>
+            <h3 class="text-xl font-bold mb-4 text-primary">SPECIAL OFFRE !</h3>
+            <p class="mb-4">Abonnez-vous maintenant et bénéficiez de 30 jours gratuits !</p>
+            <div class="text-primary text-2xl font-bold mb-4">30J GRATUITS</div>
+            <button class="w-full bg-primary text-black py-2 rounded font-bold hover:bg-yellow-300 transition">S'abonner maintenant</button>
+        </div>
     </div>
-    
-    <h2 id="components">Component System</h2>
-    <p>Quantum Framework uses a component-based architecture that allows you to build encapsulated components that manage their own state, then compose them to make complex UIs.</p>
-    
-    <div class="code-header">
-      <span>JavaScript Example</span>
-      <button class="copy-button" aria-label="Copy code">
-        <i class="fas fa-copy"></i> Copy
-      </button>
-    </div>
-    <div class="code-block">
-      <span class="comment">// A simple Quantum component</span>
-      <span class="keyword">const</span> Welcome = <span class="function">component</span>(({ name }) => {
-        <span class="keyword">return</span> <span class="function">h</span>(<span class="string">'div'</span>, { 
-          <span class="string">class</span>: <span class="string">'welcome-message'</span> 
-        }, <span class="string">`Hello, ${name}!`</span>);
-      });
-    </div>
-    
-    <h2 id="effects">Side Effects</h2>
-    <p>Side effects are managed through a dedicated system that keeps them separate from your pure components, making your code easier to test and reason about.</p>
-    
-    <div class="feedback">
-      <h3>Was this helpful?</h3>
-      <div class="feedback-buttons">
-        <button class="feedback-button">
-          <i class="fas fa-thumbs-up"></i> Yes
-        </button>
-        <button class="feedback-button">
-          <i class="fas fa-thumbs-down"></i> No
-        </button>
-        <button class="feedback-button">
-          <i class="fas fa-edit"></i> Suggest edits
-        </button>
-      </div>
-    </div>
-  </main>
 
-  <script>
-    // Theme toggle functionality
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = themeToggle.querySelector('i');
-    
-    themeToggle.addEventListener('click', () => {
-      document.body.setAttribute('data-theme', 
-        document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-      
-      if (document.body.getAttribute('data-theme') === 'dark') {
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-      } else {
-        themeIcon.classList.remove('fa-sun');
-        themeIcon.classList.add('fa-moon');
-      }
-    });
-    
-    // Copy code functionality
-    document.querySelectorAll('.copy-button').forEach(button => {
-      button.addEventListener('click', () => {
-        const codeBlock = button.parentElement.nextElementSibling;
-        const textToCopy = codeBlock.textContent;
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed w-full bg-black z-30 border-b border-gray-800 navbar-animate">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <a href="#" class="text-2xl font-bold text-primary mr-4">STREAM<span class="text-white">HUB</span></a>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="#" class="text-white hover:text-primary transition">Accueil</a>
+                        <a href="#films" class="text-white hover:text-primary transition">Films</a>
+                        <a href="#series" class="text-white hover:text-primary transition">Séries</a>
+                        <a href="#adult" class="text-white hover:text-primary transition">Contenu 18+</a>
+                        <a href="#musique" class="text-white hover:text-primary transition">Musique</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-white hover:text-primary transition">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="bg-primary text-black px-4 py-2 rounded font-bold hover:bg-yellow-500 transition hidden sm:block">
+                        <i class="fas fa-user mr-2"></i>Connexion
+                    </button>
+                    <button id="mobileMenuButton" class="text-white md:hidden">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-black border-t border-gray-800">
+            <div class="container mx-auto px-4 py-2">
+                <a href="#" class="block py-2 text-white hover:text-primary">Accueil</a>
+                <a href="#films" class="block py-2 text-white hover:text-primary">Films</a>
+                <a href="#series" class="block py-2 text-white hover:text-primary">Séries</a>
+                <a href="#adult" class="block py-2 text-white hover:text-primary">Contenu 18+</a>
+                <a href="#musique" class="block py-2 text-white hover:text-primary">Musique</a>
+                <button class="w-full mt-2 bg-primary text-black px-4 py-2 rounded font-bold hover:bg-yellow-500">
+                    <i class="fas fa-user mr-2"></i>Connexion
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-4 bg-gradient-to-b from-gray-900 to-black">
+        <div class="container mx-auto">
+            <div class="flex flex-col items-center text-center">
+                <h1 class="hero-title text-4xl md:text-5xl font-bold mb-4">Tout le streaming <span class="text-primary">en un seul endroit</span></h1>
+                <p class="hero-subtitle text-xl md:text-2xl mb-8 max-w-3xl">Films, séries, musiques et contenus adultes exclusifs. Demandez ce que vous voulez !</p>
+                <div class="flex flex-col sm:flex-row gap-4 mb-12">
+                    <button class="bg-primary text-black px-8 py-3 rounded-full font-bold text-lg hover:bg-yellow-500 transition btn-pulse">
+                        Commencez l'essai gratuit
+                    </button>
+                    <button class="border border-primary text-primary px-8 py-3 rounded-full font-bold text-lg hover:bg-gray-800 transition">
+                        Faire une demande
+                    </button>
+                </div>
+                <div class="relative w-full max-w-4xl h-64 md:h-96 rounded-xl overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black z-10"></div>
+                    <video autoplay muted loop class="w-full h-full object-cover">
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                    </video>
+                    <div class="absolute bottom-0 left-0 z-20 p-6 w-full">
+                        <h3 class="text-xl font-bold">Contenu vedette du moment</h3>
+                        <div class="flex space-x-2 mt-2">
+                            <span class="bg-primary text-black text-xs px-2 py-1 rounded">Nouveauté</span>
+                            <span class="bg-gray-800 text-white text-xs px-2 py-1 rounded">18+</span>
+                        </div>
+                    </div>
+                    <button class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 bg-primary bg-opacity-90 text-black p-4 rounded-full hover:bg-opacity-100 transition">
+                        <i class="fas fa-play text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="py-16 px-4 bg-black">
+        <div class="container mx-auto">
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button class="px-6 py-2 rounded-full bg-gray-800 text-white hover:bg-primary hover:text-black transition">Tout</button>
+                <button class="px-6 py-2 rounded-full bg-gray-800 text-white hover:bg-primary hover:text-black transition">Action</button>
+                <button class="px-6 py-2 rounded-full bg-gray-800 text-white hover:bg-primary hover:text-black transition">Comédie</button>
+                <button class="px-6 py-2 rounded-full bg-gray-800 text-white hover:bg-primary hover:text-black transition">Drame</button>
+                <button class="px-6 py-2 rounded-full bg-gray-800 text-white hover:bg-primary hover:text-black transition">Horreur</button>
+                <button class="px-6 py-2 rounded-full bg-gray-800 text-white hover:bg-primary hover:text-black transition">Romance</button>
+                <button class="px-6 py-2 rounded-full bg-gray-800 text-white hover:bg-primary hover:text-black transition">18+</button>
+                <button class="px-6 py-2 rounded-full bg-gray-800 text-white hover:bg-primary hover:text-black transition">Musique</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Films Section -->
+    <section id="films" class="section py-12 px-4 bg-gradient-to-b from-black to-gray-900">
+        <div class="container mx-auto">
+            <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b border-gray-800 flex items-center">
+                <i class="fas fa-film text-primary mr-3"></i>
+                <span>Nos films populaires</span>
+                <a href="#" class="ml-auto text-sm text-primary hover:underline">Voir plus</a>
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <!-- Film Card 1 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-[2/3]">
+                        <img src="https://source.unsplash.com/random/300x450/?movie" alt="Film" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre du film</h3>
+                            <div class="flex items-center text-yellow-400 mt-1">
+                                <i class="fas fa-star"></i>
+                                <span class="ml-1 text-white">4.5</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            HD
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Film Card 2 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-[2/3]">
+                        <img src="https://source.unsplash.com/random/300x450/?cinema" alt="Film" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre du film</h3>
+                            <div class="flex items-center text-yellow-400 mt-1">
+                                <i class="fas fa-star"></i>
+                                <span class="ml-1 text-white">4.5</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            HD
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Film Card 3 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-[2/3]">
+                        <img src="https://source.unsplash.com/random/300x450/?action" alt="Film" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre du film</h3>
+                            <div class="flex items-center text-yellow-400 mt-1">
+                                <i class="fas fa-star"></i>
+                                <span class="ml-1 text-white">4.5</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            HD
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Film Card 4 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-[2/3]">
+                        <img src="https://source.unsplash.com/random/300x450/?drama" alt="Film" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre du film</h3>
+                            <div class="flex items-center text-yellow-400 mt-1">
+                                <i class="fas fa-star"></i>
+                                <span class="ml-1 text-white">4.5</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            HD
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Film Card 5 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-[2/3]">
+                        <img src="https://source.unsplash.com/random/300x450/?horror" alt="Film" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre du film</h3>
+                            <div class="flex items-center text-yellow-400 mt-1">
+                                <i class="fas fa-star"></i>
+                                <span class="ml-1 text-white">4.5</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            HD
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Séries Section -->
+    <section id="series" class="section py-12 px-4 bg-gray-900">
+        <div class="container mx-auto">
+            <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b border-gray-800 flex items-center">
+                <i class="fas fa-tv text-primary mr-3"></i>
+                <span>Séries tendance</span>
+                <a href="#" class="ml-auto text-sm text-primary hover:underline">Voir plus</a>
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <!-- Série Card 1 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-video">
+                        <img src="https://source.unsplash.com/random/800x450/?series" alt="Série" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre de la série</h3>
+                            <div class="flex justify-between items-center mt-1">
+                                <div class="flex items-center text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <span class="ml-1 text-white">4.5</span>
+                                </div>
+                                <span class="text-xs text-gray-300">12 épisodes</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            Saison 3
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Série Card 2 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-video">
+                        <img src="https://source.unsplash.com/random/800x450/?tv" alt="Série" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre de la série</h3>
+                            <div class="flex justify-between items-center mt-1">
+                                <div class="flex items-center text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <span class="ml-1 text-white">4.5</span>
+                                </div>
+                                <span class="text-xs text-gray-300">12 épisodes</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            Saison 3
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Série Card 3 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-video">
+                        <img src="https://source.unsplash.com/random/800x450/?show" alt="Série" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre de la série</h3>
+                            <div class="flex justify-between items-center mt-1">
+                                <div class="flex items-center text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <span class="ml-1 text-white">4.5</span>
+                                </div>
+                                <span class="text-xs text-gray-300">12 épisodes</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            Saison 3
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Série Card 4 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-video">
+                        <img src="https://source.unsplash.com/random/800x450/?drama" alt="Série" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre de la série</h3>
+                            <div class="flex justify-between items-center mt-1">
+                                <div class="flex items-center text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <span class="ml-1 text-white">4.5</span>
+                                </div>
+                                <span class="text-xs text-gray-300">12 épisodes</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            Saison 3
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Série Card 5 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-video">
+                        <img src="https://source.unsplash.com/random/800x450/?comedy" alt="Série" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre de la série</h3>
+                            <div class="flex justify-between items-center mt-1">
+                                <div class="flex items-center text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <span class="ml-1 text-white">4.5</span>
+                                </div>
+                                <span class="text-xs text-gray-300">12 épisodes</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            Saison 3
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contenu Adult Section -->
+    <section id="adult" class="section py-12 px-4 bg-gradient-to-b from-gray-900 to-black">
+        <div class="container mx-auto">
+            <div class="flex items-center mb-4">
+                <h2 class="text-2xl md:text-3xl font-bold flex items-center">
+                    <i class="fas fa-exclamation-triangle text-primary mr-3"></i>
+                    <span>Contenu 18+</span>
+                </h2>
+                <div class="ml-4 bg-red-600 text-white text-xs px-2 py-1 rounded flex items-center">
+                    <i class="fas fa-lock mr-1"></i>
+                    <span>Certifié</span>
+                </div>
+                <a href="#" class="ml-auto text-sm text-primary hover:underline">Voir plus</a>
+            </div>
+            <div class="mb-6">
+                <p class="text-gray-400 text-sm">Vous devez avoir 18 ans ou plus pour accéder à cette section. En continuant, vous confirmez que vous avez l'âge légal requis.</p>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <!-- Adult Card 1 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-video">
+                        <img src="https://via.placeholder.com/800x450/333333/FFFFFF/?text=18+Content" alt="Adult Content" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre du contenu</h3>
+                            <div class="flex items-center text-yellow-400 mt-1">
+                                <i class="fas fa-star"></i>
+                                <span class="ml-1 text-white">4.5</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            HD
+                        </div>
+                        <div class="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
+                            18+
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Adult Card 2 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-video">
+                        <img src="https://via.placeholder.com/800x450/333333/FFFFFF/?text=18+Content" alt="Adult Content" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre du contenu</h3>
+                            <div class="flex items-center text-yellow-400 mt-1">
+                                <i class="fas fa-star"></i>
+                                <span class="ml-1 text-white">4.5</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            HD
+                        </div>
+                        <div class="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
+                            18+
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Adult Card 3 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-video">
+                        <img src="https://via.placeholder.com/800x450/333333/FFFFFF/?text=18+Content" alt="Adult Content" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre du contenu</h3>
+                            <div class="flex items-center text-yellow-400 mt-1">
+                                <i class="fas fa-star"></i>
+                                <span class="ml-1 text-white">4.5</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            HD
+                        </div>
+                        <div class="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
+                            18+
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Adult Card 4 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-video">
+                        <img src="https://via.placeholder.com/800x450/333333/FFFFFF/?text=18+Content" alt="Adult Content" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre du contenu</h3>
+                            <div class="flex items-center text-yellow-400 mt-1">
+                                <i class="fas fa-star"></i>
+                                <span class="ml-1 text-white">4.5</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            HD
+                        </div>
+                        <div class="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
+                            18+
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Adult Card 5 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-video">
+                        <img src="https://via.placeholder.com/800x450/333333/FFFFFF/?text=18+Content" alt="Adult Content" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold text-lg">Titre du contenu</h3>
+                            <div class="flex items-center text-yellow-400 mt-1">
+                                <i class="fas fa-star"></i>
+                                <span class="ml-1 text-white">4.5</span>
+                            </div>
+                            <button class="mt-2 bg-primary text-black py-1 px-4 rounded-full text-sm font-bold hover:bg-yellow-300 transition">Regarder</button>
+                        </div>
+                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-primary px-2 py-1 rounded text-xs font-bold">
+                            HD
+                        </div>
+                        <div class="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
+                            18+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Musique Section -->
+    <section id="musique" class="section py-12 px-4 bg-black">
+        <div class="container mx-auto">
+            <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b border-gray-800 flex items-center">
+                <i class="fas fa-music text-primary mr-3"></i>
+                <span>Nouvelles musiques</span>
+                <a href="#" class="ml-auto text-sm text-primary hover:underline">Voir plus</a>
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                <!-- Musique Card 1 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-square">
+                        <img src="https://source.unsplash.com/random/300x300/?album" alt="Musique" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold">Titre de la chanson</h3>
+                            <p class="text-gray-300 text-sm">Artiste</p>
+                            <button class="mt-2 bg-primary text-black p-2 rounded-full text-sm font-bold hover:bg-yellow-300 transition self-end">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <h3 class="font-medium text-sm truncate">Titre de la chanson</h3>
+                        <p class="text-gray-400 text-xs truncate">Artiste</p>
+                    </div>
+                </div>
+                
+                <!-- Musique Card 2 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-square">
+                        <img src="https://source.unsplash.com/random/300x300/?artist" alt="Musique" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold">Titre de la chanson</h3>
+                            <p class="text-gray-300 text-sm">Artiste</p>
+                            <button class="mt-2 bg-primary text-black p-2 rounded-full text-sm font-bold hover:bg-yellow-300 transition self-end">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <h3 class="font-medium text-sm truncate">Titre de la chanson</h3>
+                        <p class="text-gray-400 text-xs truncate">Artiste</p>
+                    </div>
+                </div>
+                
+                <!-- Musique Card 3 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-square">
+                        <img src="https://source.unsplash.com/random/300x300/?music" alt="Musique" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold">Titre de la chanson</h3>
+                            <p class="text-gray-300 text-sm">Artiste</p>
+                            <button class="mt-2 bg-primary text-black p-2 rounded-full text-sm font-bold hover:bg-yellow-300 transition self-end">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <h3 class="font-medium text-sm truncate">Titre de la chanson</h3>
+                        <p class="text-gray-400 text-xs truncate">Artiste</p>
+                    </div>
+                </div>
+                
+                <!-- Musique Card 4 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-square">
+                        <img src="https://source.unsplash.com/random/300x300/?song" alt="Musique" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold">Titre de la chanson</h3>
+                            <p class="text-gray-300 text-sm">Artiste</p>
+                            <button class="mt-2 bg-primary text-black p-2 rounded-full text-sm font-bold hover:bg-yellow-300 transition self-end">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <h3 class="font-medium text-sm truncate">Titre de la chanson</h3>
+                        <p class="text-gray-400 text-xs truncate">Artiste</p>
+                    </div>
+                </div>
+                
+                <!-- Musique Card 5 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-square">
+                        <img src="https://source.unsplash.com/random/300x300/?concert" alt="Musique" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold">Titre de la chanson</h3>
+                            <p class="text-gray-300 text-sm">Artiste</p>
+                            <button class="mt-2 bg-primary text-black p-2 rounded-full text-sm font-bold hover:bg-yellow-300 transition self-end">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <h3 class="font-medium text-sm truncate">Titre de la chanson</h3>
+                        <p class="text-gray-400 text-xs truncate">Artiste</p>
+                    </div>
+                </div>
+                
+                <!-- Musique Card 6 -->
+                <div class="card-animation">
+                    <div class="relative group overflow-hidden rounded-lg aspect-square">
+                        <img src="https://source.unsplash.com/random/300x300/?rapper" alt="Musique" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4">
+                            <h3 class="text-white font-bold">Titre de la chanson</h3>
+                            <p class="text-gray-300 text-sm">Artiste</p>
+                            <button class="mt-2 bg-primary text-black p-2 rounded-full text-sm font-bold hover:bg-yellow-300 transition self-end">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <h3 class="font-medium text-sm truncate">Titre de la chanson</h3>
+                        <p class="text-gray-400 text-xs truncate">Artiste</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demande Section -->
+    <section class="section py-16 px-4 bg-gradient-to-b from-black to-gray-900">
+        <div class="container mx-auto max-w-4xl">
+            <div class="bg-gray-900 rounded-xl p-8 border border-gray-800">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center text-primary">
+                    <i class="fas fa-plus-circle mr-2"></i>
+                    Faire une demande
+                </h2>
+                <p class="text-center mb-8 text-gray-300">
+                    Vous ne trouvez pas ce que vous cherchez ? Demandez-nous et nous l'ajouterons dès que possible !
+                </p>
+                <form>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium mb-2">Nom</label>
+                            <input type="text" id="name" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Votre nom">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium mb-2">Email</label>
+                            <input type="email" id="email" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Votre email">
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <label for="type" class="block text-sm font-medium mb-2">Type de contenu</label>
+                        <select id="type" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="">Sélectionnez un type</option>
+                            <option value="film">Film</option>
+                            <option value="serie">Série</option>
+                            <option value="musique">Musique</option>
+                            <option value="adult">Contenu adulte</option>
+                            <option value="other">Autre</option>
+                        </select>
+                    </div>
+                    <div class="mb-6">
+                        <label for="request" class="block text-sm font-medium mb-2">Votre demande</label>
+                        <textarea id="request" rows="5" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Décrivez en détail ce que vous souhaitez..."></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="bg-primary text-black px-8 py-3 rounded-full font-bold hover:bg-yellow-500 transition">Envoyer la demande</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section py-16 px-4 bg-black">
+        <div class="container mx-auto">
+            <h2 class="text-2xl md:text-3xl font-bold mb-12 text-center">Pourquoi choisir StreamHub ?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-gray-900 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 border border-gray-800">
+                        <i class="fas fa-film text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Contenu varié</h3>
+                    <p class="text-gray-400">Des milliers de films, séries, musiques et contenus exclusifs dans toutes les catégories.</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-gray-900 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 border border-gray-800">
+                        <i class="fas fa-tachometer-alt text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Qualité HD</h3>
+                    <p class="text-gray-400">Profitez d'un streaming fluide en qualité HD et 4K, sans coupures.</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-gray-900 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 border border-gray-800">
+                        <i class="fas fa-user-lock text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Contenu exclusif</h3>
+                    <p class="text-gray-400">Accès à des vidéos 18+ exclusives que vous ne trouverez nulle part ailleurs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section py-16 px-4 bg-gradient-to-r from-black via-gray-900 to-black">
+        <div class="container mx-auto text-center">
+            <h2 class="text-2xl md:text-4xl font-bold mb-6">Prêt à commencer votre expérience de streaming ultime ?</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Rejoignez des milliers d'utilisateurs satisfaits dès aujourd'hui.</p>
+            <button class="bg-primary text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-500 transition btn-pulse">
+                Commencez l'essai gratuit - 30 jours
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-gray-800 py-12 px-4">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+                <div class="col-span-2">
+                    <h3 class="text-2xl font-bold text-primary mb-4">STREAM<span class="text-white">HUB</span></h3>
+                    <p class="text-gray-400 mb-4">La plateforme de streaming ultime pour tous vos besoins en divertissement.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-primary transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">Navigation</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition">Accueil</a></li>
+                        <li><a href="#films" class="text-gray-400 hover:text-primary transition">Films</a></li>
+                        <li><a href="#series" class="text-gray-400 hover:text-primary transition">Séries</a></li>
+                        <li><a href="#musique" class="text-gray-400 hover:text-primary transition">Musique</a></li>
+                        <li><a href="#adult" class="text-gray-400 hover:text-primary transition">Contenu 18+</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">Aide</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition">CGU</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition">Confidentialité</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">Newsletter</h4>
+                    <p class="text-gray-400 mb-4">Inscrivez-vous pour recevoir les dernières nouveautés.</p>
+                    <form class="flex">
+                        <input type="email" placeholder="Votre email" class="bg-gray-800 text-white px-4 py-2 rounded-l focus:outline-none focus:ring-1 focus:ring-primary w-full">
+                        <button type="submit" class="bg-primary text-black px-4 py-2 rounded-r hover:bg-yellow-500 transition">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 mb-4 md:mb-0">© 2023 StreamHub. Tous droits réservés.</p>
+                <div class="flex space-x-6">
+                    <img src="https://via.placeholder.com/40x25" alt="Payment" class="h-6">
+                    <img src="https://via.placeholder.com/40x25" alt="Payment" class="h-6">
+                    <img src="https://via.placeholder.com/40x25" alt="Payment" class="h-6">
+                    <img src="https://via.placeholder.com/40x25" alt="Payment" class="h-6">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Age Verification
+        const ageVerification = document.getElementById('ageVerification');
+        const ageConfirm = document.getElementById('ageConfirm');
+        const ageDeny = document.getElementById('ageDeny');
         
-        navigator.clipboard.writeText(textToCopy).then(() => {
-          const originalText = button.innerHTML;
-          button.innerHTML = '<i class="fas fa-check"></i> Copied!';
-          
-          setTimeout(() => {
-            button.innerHTML = originalText;
-          }, 2000);
-        }).catch(err => {
-          console.error('Failed to copy: ', err);
+        ageConfirm.addEventListener('click', () => {
+            ageVerification.classList.add('hidden');
+            // Start popup timer after age verification
+            setTimeout(showPopup, 5000);
+            setInterval(showPopup, 300000); // 5 minutes
         });
-      });
-    });
-    
-    // Search functionality
-    const searchForm = document.getElementById('search-form');
-    const searchInput = document.getElementById('search-input');
-    const searchButton = document.getElementById('search-button');
-
-    let accessMode = false;
-    const magicWord = '_execute';
-
-    searchForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const inputValue = searchInput.value.trim();
-
-      if (!accessMode) {
-        if (inputValue === magicWord) {
-          accessMode = true;
-          searchInput.value = '';
-          searchInput.placeholder = 'Enter Access Code...';
-          searchButton.innerHTML = '<i class="fas fa-lock-open"></i>';
-        } else {
-          // Show a more user-friendly message
-          const toast = document.createElement('div');
-          toast.textContent = `No results found for "${inputValue}"`;
-          toast.style.position = 'fixed';
-          toast.style.bottom = '20px';
-          toast.style.right = '20px';
-          toast.style.backgroundColor = 'var(--error-color)';
-          toast.style.color = 'white';
-          toast.style.padding = '12px 20px';
-          toast.style.borderRadius = 'var(--radius)';
-          toast.style.boxShadow = 'var(--shadow-lg)';
-          toast.style.zIndex = '1000';
-          document.body.appendChild(toast);
-          
-          setTimeout(() => {
-            document.body.removeChild(toast);
-          }, 3000);
-        }
-      } else {
-        const today = new Date();
-        const day = today.getDate();
-        const month = today.getMonth() + 1;
-        const year = today.getFullYear();
-        const correctCode = (day + month) * 2 + year;
-
-        if (inputValue === correctCode.toString()) {
-          window.location.href = "hub.html";
-        } else {
-          searchInput.style.borderColor = 'var(--error-color)';
-          searchInput.animate([
-            { transform: 'translateX(-10px)' },
-            { transform: 'translateX(10px)' },
-            { transform: 'translateX(-10px)' },
-            { transform: 'translateX(0)' }
-          ], { duration: 300, iterations: 1 });
-          setTimeout(() => {
-            searchInput.style.borderColor = '';
-          }, 1500);
-          searchInput.value = '';
-        }
-      }
-    });
-    
-    // Add smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
         
-        const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
+        ageDeny.addEventListener('click', () => {
+            window.location.href = 'https://www.google.com';
+        });
         
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
-          targetElement.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
+        // Mobile Menu
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Popup
+        const promoPopup = document.getElementById('promoPopup');
+        const closePopup = document.getElementById('closePopup');
+        
+        function showPopup() {
+            promoPopup.classList.remove('hidden');
+            promoPopup.classList.add('flex');
         }
-      });
-    });
-  </script>
-
+        
+        closePopup.addEventListener('click', () => {
+            promoPopup.classList.add('hidden');
+            promoPopup.classList.remove('flex');
+        });
+        
+        // Scroll Animation
+        function checkVisibility() {
+            const sections = document.querySelectorAll('.section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (sectionTop < windowHeight - 100) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+        
+        // Initial check when page loads
+        document.addEventListener('DOMContentLoaded', checkVisibility);
+        
+        // Check on scroll
+        window.addEventListener('scroll', checkVisibility);
+        
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        let lastScroll = 0;
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll <= 0) {
+                navbar.classList.remove('navbar-animate');
+                return;
+            }
+            
+            if (currentScroll > lastScroll && !navbar.classList.contains('hidden')) {
+                // Scroll down
+                navbar.classList.add('navbar-animate');
+            } else if (currentScroll < lastScroll && navbar.classList.contains('navbar-animate')) {
+                // Scroll up
+                navbar.classList.remove('navbar-animate');
+            }
+            
+            lastScroll = currentScroll;
+        });
+    </script>
 </body>
-</html>gigir
+</html>
